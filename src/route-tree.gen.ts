@@ -13,6 +13,8 @@ import { Route as AppLayoutRouteImport } from './pages/_app/layout'
 import { Route as IndexRouteImport } from './pages/index'
 import { Route as AuthSigninRouteImport } from './pages/_auth/signin'
 import { Route as AppAgendaRouteImport } from './pages/_app/agenda'
+import { Route as AppPatientsIndexRouteImport } from './pages/_app/patients/index'
+import { Route as AppPatientsPatientIdRouteImport } from './pages/_app/patients/$patientId'
 
 const AppLayoutRoute = AppLayoutRouteImport.update({
   id: '/_app',
@@ -33,16 +35,30 @@ const AppAgendaRoute = AppAgendaRouteImport.update({
   path: '/agenda',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppPatientsIndexRoute = AppPatientsIndexRouteImport.update({
+  id: '/patients/',
+  path: '/patients/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppPatientsPatientIdRoute = AppPatientsPatientIdRouteImport.update({
+  id: '/patients/$patientId',
+  path: '/patients/$patientId',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/agenda': typeof AppAgendaRoute
   '/signin': typeof AuthSigninRoute
+  '/patients/$patientId': typeof AppPatientsPatientIdRoute
+  '/patients': typeof AppPatientsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/agenda': typeof AppAgendaRoute
   '/signin': typeof AuthSigninRoute
+  '/patients/$patientId': typeof AppPatientsPatientIdRoute
+  '/patients': typeof AppPatientsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -50,13 +66,22 @@ export interface FileRoutesById {
   '/_app': typeof AppLayoutRouteWithChildren
   '/_app/agenda': typeof AppAgendaRoute
   '/_auth/signin': typeof AuthSigninRoute
+  '/_app/patients/$patientId': typeof AppPatientsPatientIdRoute
+  '/_app/patients/': typeof AppPatientsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/agenda' | '/signin'
+  fullPaths: '/' | '/agenda' | '/signin' | '/patients/$patientId' | '/patients'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/agenda' | '/signin'
-  id: '__root__' | '/' | '/_app' | '/_app/agenda' | '/_auth/signin'
+  to: '/' | '/agenda' | '/signin' | '/patients/$patientId' | '/patients'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/_app/agenda'
+    | '/_auth/signin'
+    | '/_app/patients/$patientId'
+    | '/_app/patients/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -95,15 +120,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAgendaRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/patients/': {
+      id: '/_app/patients/'
+      path: '/patients'
+      fullPath: '/patients'
+      preLoaderRoute: typeof AppPatientsIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/patients/$patientId': {
+      id: '/_app/patients/$patientId'
+      path: '/patients/$patientId'
+      fullPath: '/patients/$patientId'
+      preLoaderRoute: typeof AppPatientsPatientIdRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
   }
 }
 
 interface AppLayoutRouteChildren {
   AppAgendaRoute: typeof AppAgendaRoute
+  AppPatientsPatientIdRoute: typeof AppPatientsPatientIdRoute
+  AppPatientsIndexRoute: typeof AppPatientsIndexRoute
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppAgendaRoute: AppAgendaRoute,
+  AppPatientsPatientIdRoute: AppPatientsPatientIdRoute,
+  AppPatientsIndexRoute: AppPatientsIndexRoute,
 }
 
 const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(

@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { ModeToggle } from '@/components/mode-toggle'
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 
@@ -11,18 +11,9 @@ export function AppHeader() {
           className="mx-2 data-[orientation=vertical]:h-4"
           orientation="vertical"
         />
-        <h1 className="font-medium text-base">Documents</h1>
+        <h1 className="font-medium text-base">Sistema Odontológico</h1>
         <div className="ml-auto flex items-center gap-2">
-          <Button asChild className="hidden sm:flex" size="sm" variant="ghost">
-            <a
-              className="dark:text-foreground"
-              href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              GitHub
-            </a>
-          </Button>
+          <ModeToggle />
         </div>
       </div>
     </header>

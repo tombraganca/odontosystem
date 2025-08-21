@@ -1,17 +1,15 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import {
+  CalendarDays,
   CircleGauge,
   HelpCircle,
   LayoutList,
   Search,
   Settings,
+  Users,
 } from 'lucide-react'
 import { AppSidebar } from '@/components/side-bar/app-side-bar'
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar'
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { AppHeader } from './-components/header'
 
 export const Route = createFileRoute('/_app')({
@@ -26,8 +24,18 @@ const data = {
   },
   navMain: [
     {
+      title: 'Agenda',
+      url: '/agenda',
+      icon: CalendarDays,
+    },
+    {
+      title: 'Pacientes',
+      url: '/patients',
+      icon: Users,
+    },
+    {
       title: 'Dashboard',
-      url: '#',
+      url: '/',
       icon: CircleGauge,
     },
     {
