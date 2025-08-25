@@ -1,9 +1,9 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -11,48 +11,59 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
 const loginSchema = z.object({
-  email: z.email('Digite um email válido'),
+  email: z.email("Digite um email válido"),
   password: z
-    .string('Campo obrigatório')
-    .min(8, 'Digite uma senha válida')
-    .regex(passwordRegex, 'Digite uma senha válida'),
-})
+    .string("Campo obrigatório")
+    .min(8, "Digite uma senha válida")
+    .regex(passwordRegex, "Digite uma senha válida"),
+});
 
-type LoginForm = z.infer<typeof loginSchema>
+type LoginForm = z.infer<typeof loginSchema>;
 
-export const Route = createFileRoute('/_auth/signin')({
+export const Route = createFileRoute("/_auth/signin")({
   component: SigninPage,
-})
+});
 
 export function SigninPage({
   className,
   ...props
-}: React.ComponentProps<'div'>) {
+}: React.ComponentProps<"div">) {
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
-    mode: 'onSubmit',
+    mode: "onSubmit",
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
-  })
+  });
 
-  function onSubmit(data: LoginForm) {
-    // TODO: implementar autenticação
-    alert('Login realizado!')
-  }
+  const onSubmit = async (data: LoginForm) => {
+    try {
+      await login(data.email, data.password);
+      navigate({ to: "/" });
+    } catch (err) {
+      toast.error("Credenciais inválidas", {
+        description: "Verifique seu email e senha e tente novamente.",
+      });
+    }
+  };
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
       <div className="w-full max-w-sm md:max-w-3xl">
-        <div className={cn('flex flex-col gap-6', className)} {...props}>
+        <div className={cn("flex flex-col gap-6", className)} {...props}>
           <Card className="overflow-hidden p-0">
             <CardContent className="grid p-0 md:grid-cols-2">
               <Form {...form}>
@@ -118,10 +129,10 @@ export function SigninPage({
                       disabled={form.formState.isSubmitting}
                       type="submit"
                     >
-                      {form.formState.isSubmitting ? 'Entrando...' : 'Login'}
+                      {form.formState.isSubmitting ? "Entrando..." : "Login"}
                     </Button>
                     <div className="text-center text-sm">
-                      Não tem uma conta?{' '}
+                      Não tem uma conta?{" "}
                       <Link className="underline underline-offset-4" to="/">
                         Entre em contato
                       </Link>
@@ -133,7 +144,7 @@ export function SigninPage({
                 <picture>
                   <img
                     alt="cover"
-                    className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+                    className="absolute inset-0 h-full w-full object-cover"
                     height={500}
                     src="/login-cover.png"
                     width={500}
@@ -142,13 +153,12 @@ export function SigninPage({
               </div>
             </CardContent>
           </Card>
-          <div className="text-balance text-center text-muted-foreground text-xs *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-primary">
-            Ao clicar em continuar, você concorda com nossos{' '}
-            <Link to="/terms">Termos de Serviço</Link> e{' '}
-            <Link to="/policy">Política de Privacidade</Link>.
+          <div className="text-balance text-center text-muted-foreground text-xs">
+            Ao clicar em continuar, você concorda com nossos Termos de Serviço e
+            Política de Privacidade.
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

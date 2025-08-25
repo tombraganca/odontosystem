@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom/client'
 
 import './index.css'
 import App from './app.tsx'
-import { ThemeProvider } from './context/ThemeContext'
+import { ThemeProvider } from './context/ThemeContext.tsx'
 import reportWebVitals from './reportWebVitals.ts'
 
 const rootElement = document.getElementById('app')

@@ -16,6 +16,7 @@
       "vite/client"
     ],
     "moduleResolution": "bundler",
+     "esModuleInterop": true,
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,

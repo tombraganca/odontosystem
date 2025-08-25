@@ -1,9 +1,9 @@
 import { Link } from '@tanstack/react-router'
 import { AlarmCheck, type LucideIcon } from 'lucide-react'
 import type * as React from 'react'
-import { NavMain } from '@/components/side-bar/nav-main'
-import { NavSecondary } from '@/components/side-bar/nav-secondary'
-import { NavUser } from '@/components/side-bar/nav-user'
+import { NavMain } from '@/components/layout/side-bar/nav-main'
+import { NavSecondary } from '@/components/layout/side-bar/nav-secondary'
+import { NavUser } from '@/components/layout/side-bar/nav-user'
 import {
   Sidebar,
   SidebarContent,

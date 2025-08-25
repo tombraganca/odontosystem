@@ -7,54 +7,85 @@ import {
 } from 'react'
 
 import { sleep } from '@/lib/utils'
+import { authService } from '@/services/auth'
+import type { User } from '@/types'
 
 export interface AuthContext {
   isAuthenticated: boolean
-  login: (username: string) => Promise<void>
+  login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
-  user: string | null
+  user: User | null
+  token: string | null
 }
 
 const AuthContext = createContext<AuthContext | null>(null)
 
-const key = 'tanstack.auth.user'
+const userKey = 'tanstack.auth.user'
+const tokenKey = 'tanstack.auth.token'
 
 function getStoredUser() {
-  return localStorage.getItem(key)
+  return localStorage.getItem(userKey)
 }
 
 function setStoredUser(user: string | null) {
   if (user) {
-    localStorage.setItem(key, user)
+    localStorage.setItem(userKey, user)
   } else {
-    localStorage.removeItem(key)
+    localStorage.removeItem(userKey)
+  }
+}
+
+function getStoredToken() {
+  return localStorage.getItem(tokenKey)
+}
+
+function setStoredToken(token: string | null) {
+  if (token) {
+    localStorage.setItem(tokenKey, token)
+  } else {
+    localStorage.removeItem(tokenKey)
   }
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<string | null>(getStoredUser())
-  const isAuthenticated = !!user
+  const [user, setUser] = useState<User | null>(null)
+  const [token, setToken] = useState<string | null>(getStoredToken())
+  const isAuthenticated = !!token
 
   const logout = useCallback(async () => {
     await sleep()
-
+    await authService.logout()
     setStoredUser(null)
+    setStoredToken(null)
     setUser(null)
+    setToken(null)
   }, [])
 
-  const login = useCallback(async (username: string) => {
-    await sleep()
-
-    setStoredUser(username)
-    setUser(username)
+  const login = useCallback(async (email: string, password: string) => {
+    try {
+      const response = await authService.login(email, password)
+      const accessToken = response.access_token
+      setStoredToken(accessToken)
+      setToken(accessToken)
+      setStoredUser(email)
+      setUser({ name: email, email } as User)
+    } catch (error) {
+      throw new Error('Credenciais inválidas')
+    }
   }, [])
 
   useEffect(() => {
-    setUser(getStoredUser())
+    const storedToken = getStoredToken()
+    if(!storedToken) return
+    const storedUser = getStoredUser()
+    setToken(storedToken)
+    if (storedUser) {
+      setUser({ name: storedUser, email: storedUser } as User) // Temporary user data
+    }
   }, [])
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, token, login, logout }}>
       {children}
     </AuthContext.Provider>
   )

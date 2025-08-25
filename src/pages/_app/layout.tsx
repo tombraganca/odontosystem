@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import {
   CalendarDays,
   CircleGauge,
@@ -7,61 +7,61 @@ import {
   Search,
   Settings,
   Users,
-} from 'lucide-react'
-import { AppSidebar } from '@/components/side-bar/app-side-bar'
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { AppHeader } from './-components/header'
+} from "lucide-react";
+import { AppSidebar } from "@/components/layout/side-bar/app-side-bar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppHeader } from "./-components/header";
 
-export const Route = createFileRoute('/_app')({
+export const Route = createFileRoute("/_app")({
   component: RouteComponent,
-})
+});
 
 const data = {
   user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
     {
-      title: 'Agenda',
-      url: '/agenda',
+      title: "Agenda",
+      url: "/agenda",
       icon: CalendarDays,
     },
     {
-      title: 'Pacientes',
-      url: '/patients',
+      title: "Pacientes",
+      url: "/patients",
       icon: Users,
     },
     {
-      title: 'Dashboard',
-      url: '/',
+      title: "Dashboard",
+      url: "/",
       icon: CircleGauge,
     },
     {
-      title: 'Lifecycle',
-      url: '#',
+      title: "Lifecycle",
+      url: "#",
       icon: LayoutList,
     },
   ],
   navSecondary: [
     {
-      title: 'Settings',
-      url: '#',
+      title: "Settings",
+      url: "#",
       icon: Settings,
     },
     {
-      title: 'Get Help',
-      url: '#',
+      title: "Get Help",
+      url: "#",
       icon: HelpCircle,
     },
     {
-      title: 'Search',
-      url: '#',
+      title: "Search",
+      url: "#",
       icon: Search,
     },
   ],
-}
+};
 
 function RouteComponent() {
   return (
@@ -76,5 +76,5 @@ function RouteComponent() {
         <Outlet />
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }
