@@ -12,8 +12,8 @@ import { Route as rootRouteImport } from './pages/__root'
 import { Route as AppLayoutRouteImport } from './pages/_app/layout'
 import { Route as IndexRouteImport } from './pages/index'
 import { Route as AuthSigninRouteImport } from './pages/_auth/signin'
-import { Route as AppAgendaRouteImport } from './pages/_app/agenda'
 import { Route as AppPatientsIndexRouteImport } from './pages/_app/patients/index'
+import { Route as AppAgendaIndexRouteImport } from './pages/_app/agenda/index'
 import { Route as AppPatientsPatientIdRouteImport } from './pages/_app/patients/$patientId'
 
 const AppLayoutRoute = AppLayoutRouteImport.update({
@@ -30,14 +30,14 @@ const AuthSigninRoute = AuthSigninRouteImport.update({
   path: '/signin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppAgendaRoute = AppAgendaRouteImport.update({
-  id: '/agenda',
-  path: '/agenda',
-  getParentRoute: () => AppLayoutRoute,
-} as any)
 const AppPatientsIndexRoute = AppPatientsIndexRouteImport.update({
   id: '/patients/',
   path: '/patients/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppAgendaIndexRoute = AppAgendaIndexRouteImport.update({
+  id: '/agenda/',
+  path: '/agenda/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
 const AppPatientsPatientIdRoute = AppPatientsPatientIdRouteImport.update({
@@ -48,39 +48,39 @@ const AppPatientsPatientIdRoute = AppPatientsPatientIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/agenda': typeof AppAgendaRoute
   '/signin': typeof AuthSigninRoute
   '/patients/$patientId': typeof AppPatientsPatientIdRoute
+  '/agenda': typeof AppAgendaIndexRoute
   '/patients': typeof AppPatientsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/agenda': typeof AppAgendaRoute
   '/signin': typeof AuthSigninRoute
   '/patients/$patientId': typeof AppPatientsPatientIdRoute
+  '/agenda': typeof AppAgendaIndexRoute
   '/patients': typeof AppPatientsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppLayoutRouteWithChildren
-  '/_app/agenda': typeof AppAgendaRoute
   '/_auth/signin': typeof AuthSigninRoute
   '/_app/patients/$patientId': typeof AppPatientsPatientIdRoute
+  '/_app/agenda/': typeof AppAgendaIndexRoute
   '/_app/patients/': typeof AppPatientsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/agenda' | '/signin' | '/patients/$patientId' | '/patients'
+  fullPaths: '/' | '/signin' | '/patients/$patientId' | '/agenda' | '/patients'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/agenda' | '/signin' | '/patients/$patientId' | '/patients'
+  to: '/' | '/signin' | '/patients/$patientId' | '/agenda' | '/patients'
   id:
     | '__root__'
     | '/'
     | '/_app'
-    | '/_app/agenda'
     | '/_auth/signin'
     | '/_app/patients/$patientId'
+    | '/_app/agenda/'
     | '/_app/patients/'
   fileRoutesById: FileRoutesById
 }
@@ -113,18 +113,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSigninRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/agenda': {
-      id: '/_app/agenda'
-      path: '/agenda'
-      fullPath: '/agenda'
-      preLoaderRoute: typeof AppAgendaRouteImport
-      parentRoute: typeof AppLayoutRoute
-    }
     '/_app/patients/': {
       id: '/_app/patients/'
       path: '/patients'
       fullPath: '/patients'
       preLoaderRoute: typeof AppPatientsIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/agenda/': {
+      id: '/_app/agenda/'
+      path: '/agenda'
+      fullPath: '/agenda'
+      preLoaderRoute: typeof AppAgendaIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_app/patients/$patientId': {
@@ -138,14 +138,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppLayoutRouteChildren {
-  AppAgendaRoute: typeof AppAgendaRoute
   AppPatientsPatientIdRoute: typeof AppPatientsPatientIdRoute
+  AppAgendaIndexRoute: typeof AppAgendaIndexRoute
   AppPatientsIndexRoute: typeof AppPatientsIndexRoute
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
-  AppAgendaRoute: AppAgendaRoute,
   AppPatientsPatientIdRoute: AppPatientsPatientIdRoute,
+  AppAgendaIndexRoute: AppAgendaIndexRoute,
   AppPatientsIndexRoute: AppPatientsIndexRoute,
 }
 

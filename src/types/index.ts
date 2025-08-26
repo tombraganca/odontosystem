@@ -18,3 +18,7 @@ export interface ApiResponse<T = unknown> {
   message?: string
   success: boolean
 }
+
+// Re-exporta tipos específicos
+export type { Appointment, CreateAppointmentData, UpdateAppointmentStatusData } from './appointment'
+export type { Dentist, CreateDentistData } from './dentist'
