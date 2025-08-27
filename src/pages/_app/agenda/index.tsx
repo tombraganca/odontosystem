@@ -7,9 +7,9 @@ import {
   Plus,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { AppointmentList } from '@/components/appointments/appointment-list'
 import { CreateAppointmentDialog } from '@/components/appointments/create-appointment-dialog'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { appointmentService } from '@/services'
 import type { Appointment } from '@/types'
 import { WeeklySchedule } from '../-components/weekly-schedule'
@@ -135,14 +135,6 @@ function RouteComponent() {
             errorMessage = error.message || 'Erro ao carregar consultas'
         }
       }
-
-      // Toast com erro específico
-      console.warn(
-        `API Error (${error.statusCode || 'unknown'}): ${errorMessage}. Using mock data.`
-      )
-
-      // Em caso de erro, usa dados mock
-      setAppointments(mockAppointments)
     } finally {
       setLoading(false)
     }
@@ -241,7 +233,10 @@ function RouteComponent() {
         </div>
         <div className="space-y-4">
           <h2 className="font-semibold text-xl">Próximas Consultas</h2>
-          <AppointmentList key={refreshKey} />
+          <Card>
+            Estamos trabalhando na exibição das próximas consultas
+            {/* Estamos trabalhando na exibição das próximas consultas */}
+          </Card>
         </div>
       </div>
     </div>

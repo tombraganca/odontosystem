@@ -218,19 +218,6 @@ export function WeeklySchedule({
           </div>
         ))}
       </div>
-
-      {/* Botão de confirmação */}
-      {selectedTimeSlot && (
-        <div className="flex justify-center pt-4">
-          <Button
-            onClick={() => {
-              /* TODO: Implement appointment confirmation */
-            }}
-          >
-            Confirmar Agendamento
-          </Button>
-        </div>
-      )}
     </div>
   )
 }
