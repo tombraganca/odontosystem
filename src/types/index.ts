@@ -1,4 +1,11 @@
 // Tipos globais da aplicação
+export const UserRole = {
+  ADMIN: 'ADMIN',
+  COMMON: 'COMMON',
+} as const
+
+export type UserRole = typeof UserRole[keyof typeof UserRole]
+
 export interface User {
   id: string
   name: string
@@ -6,6 +13,7 @@ export interface User {
   phone: string
   cpf: string
   birthDate: string
+  role: UserRole
 }
 
 export interface LoginResponse {

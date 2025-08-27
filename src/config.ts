@@ -2,7 +2,7 @@
 export const config = {
   api: {
     baseURL: 'http://localhost:5000',
-    timeout: 10000,
+    timeout: 10_000,
   },
   app: {
     name: 'Odonto System',

@@ -1,9 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from '@tanstack/react-router'
+import { ROUTES } from '../constants/routes'
 
-export const Route = createFileRoute("/")({
-  component: App,
-});
-
-function App() {
-  return <span> lading page</span>;
-}
+export const Route = createFileRoute('/')({
+  component: () => <Navigate replace to={ROUTES.SIGNIN} />,
+})

@@ -1,6 +1,8 @@
 // Exporta todos os serviços de forma centralizada
-export { default as api } from './api'
-export { authService } from './auth'
-export { userService } from './users'
+
+// biome-ignore lint/performance/noBarrelFile: only use for services
+export { api } from './api'
 export { appointmentService } from './appointments'
+export { authService } from './auth'
 export { dentistService } from './dentists'
+export { userService } from './users'

@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { useState, useEffect } from 'react'
 import { CalendarIcon, Plus } from 'lucide-react'
-
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -23,9 +23,8 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { appointmentService, userService, dentistService } from '@/services'
-import type { User, Dentist, CreateAppointmentData } from '@/types'
-import { toast } from 'sonner'
+import { appointmentService, dentistService, userService } from '@/services'
+import type { CreateAppointmentData, Dentist, User } from '@/types'
 
 const createAppointmentSchema = z.object({
   userId: z.string().min(1, 'Selecione um paciente'),
@@ -51,9 +50,24 @@ const treatmentTypes = [
 ]
 
 const timeSlots = [
-  '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
-  '11:00', '11:30', '13:00', '13:30', '14:00', '14:30',
-  '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
+  '08:00',
+  '08:30',
+  '09:00',
+  '09:30',
+  '10:00',
+  '10:30',
+  '11:00',
+  '11:30',
+  '13:00',
+  '13:30',
+  '14:00',
+  '14:30',
+  '15:00',
+  '15:30',
+  '16:00',
+  '16:30',
+  '17:00',
+  '17:30',
 ]
 
 interface CreateAppointmentDialogProps {
@@ -62,10 +76,10 @@ interface CreateAppointmentDialogProps {
   children?: React.ReactNode
 }
 
-export function CreateAppointmentDialog({ 
+export function CreateAppointmentDialog({
   onAppointmentCreated,
   initialDate,
-  children
+  children,
 }: CreateAppointmentDialogProps) {
   const [open, setOpen] = useState(false)
   const [users, setUsers] = useState<User[]>([])
@@ -84,19 +98,17 @@ export function CreateAppointmentDialog({
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      loadUsers()
-      loadDentists()
-    }
-  }, [open])
-
   const loadUsers = async () => {
     try {
       const usersData = await userService.getUsers()
       setUsers(usersData)
-    } catch (error) {
-      toast.error('Erro ao carregar pacientes')
+    } catch (error: any) {
+      console.error('Error loading users:', error)
+      const errorMessage =
+        error.statusCode === 403
+          ? 'Sem permissão para ver pacientes'
+          : error.message || 'Erro ao carregar pacientes'
+      toast.error(errorMessage)
     }
   }
 
@@ -104,16 +116,25 @@ export function CreateAppointmentDialog({
     try {
       const dentistsData = await dentistService.getActiveDentists()
       setDentists(dentistsData)
-    } catch (error) {
-      toast.error('Erro ao carregar dentistas')
+    } catch (error: any) {
+      console.error('Error loading dentists:', error)
+      const errorMessage =
+        error.statusCode === 403
+          ? 'Sem permissão para ver dentistas'
+          : error.message || 'Erro ao carregar dentistas'
+      toast.error(errorMessage)
     }
   }
 
   const onSubmit = async (data: CreateAppointmentForm) => {
     setLoading(true)
     try {
+      console.log('Creating appointment with data:', data)
+
       // Combina data e hora
-      const scheduledDateTime = new Date(`${data.scheduledDate}T${data.scheduledTime}`)
+      const scheduledDateTime = new Date(
+        `${data.scheduledDate}T${data.scheduledTime}`
+      )
 
       const appointmentData: CreateAppointmentData = {
         userId: data.userId,
@@ -123,21 +144,51 @@ export function CreateAppointmentDialog({
         notes: data.notes || '',
       }
 
+      console.log('Appointment data to be sent:', appointmentData)
       await appointmentService.createAppointment(appointmentData)
-      
+
       toast.success('Consulta agendada com sucesso!')
       setOpen(false)
       form.reset()
       onAppointmentCreated?.()
-    } catch (error) {
-      toast.error('Erro ao agendar consulta')
+    } catch (error: any) {
+      console.error('Error creating appointment:', error)
+
+      let errorMessage = 'Erro ao agendar consulta'
+      if (error.statusCode) {
+        switch (error.statusCode) {
+          case 400:
+            errorMessage = 'Dados inválidos. Verifique os campos preenchidos.'
+            break
+          case 404:
+            errorMessage = 'Paciente ou dentista não encontrado.'
+            break
+          case 409:
+            errorMessage = 'Conflito de horário. Este horário já está ocupado.'
+            break
+          case 422:
+            errorMessage = 'Dados de entrada inválidos.'
+            break
+          default:
+            errorMessage = error.message || 'Erro ao agendar consulta'
+        }
+      }
+
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }
   }
 
+  useEffect(() => {
+    if (open) {
+      loadUsers()
+      loadDentists()
+    }
+  }, [open])
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog onOpenChange={setOpen} open={open}>
       <DialogTrigger asChild>
         {children || (
           <Button>
@@ -146,7 +197,7 @@ export function CreateAppointmentDialog({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-h-[80vh] overflow-y-auto sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <CalendarIcon className="h-5 w-5" />
@@ -156,9 +207,9 @@ export function CreateAppointmentDialog({
             Preencha os dados para agendar uma nova consulta.
           </DialogDescription>
         </DialogHeader>
-        
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="userId"
@@ -167,7 +218,7 @@ export function CreateAppointmentDialog({
                   <FormLabel>Paciente</FormLabel>
                   <FormControl>
                     <select
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:font-medium file:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       {...field}
                     >
                       <option value="">Selecione um paciente</option>
@@ -191,7 +242,7 @@ export function CreateAppointmentDialog({
                   <FormLabel>Dentista</FormLabel>
                   <FormControl>
                     <select
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:font-medium file:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       {...field}
                     >
                       <option value="">Selecione um dentista</option>
@@ -230,7 +281,7 @@ export function CreateAppointmentDialog({
                     <FormLabel>Horário</FormLabel>
                     <FormControl>
                       <select
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:font-medium file:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         {...field}
                       >
                         <option value="">Selecione um horário</option>
@@ -255,7 +306,7 @@ export function CreateAppointmentDialog({
                   <FormLabel>Tipo de Tratamento</FormLabel>
                   <FormControl>
                     <select
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:font-medium file:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       {...field}
                     >
                       <option value="">Selecione o tratamento</option>
@@ -279,7 +330,7 @@ export function CreateAppointmentDialog({
                   <FormLabel>Observações</FormLabel>
                   <FormControl>
                     <textarea
-                      className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+                      className="flex min-h-[80px] w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       placeholder="Observações adicionais (opcional)"
                       {...field}
                     />
@@ -290,14 +341,14 @@ export function CreateAppointmentDialog({
             />
 
             <DialogFooter>
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
                 onClick={() => setOpen(false)}
+                type="button"
+                variant="outline"
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={loading}>
+              <Button disabled={loading} type="submit">
                 {loading ? 'Agendando...' : 'Agendar Consulta'}
               </Button>
             </DialogFooter>

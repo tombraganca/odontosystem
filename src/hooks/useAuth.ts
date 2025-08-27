@@ -1,6 +1,5 @@
-// Hook customizado para autenticação
-import { useAuth } from '@/context/AuthContext'
 import { useNavigate } from '@tanstack/react-router'
+import { useAuth } from '@/context/AuthContext'
 
 export function useAuthGuard() {
   const { isAuthenticated } = useAuth()

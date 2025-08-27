@@ -1,6 +1,7 @@
 // Serviços relacionados a usuários
-import api from './api'
+
 import type { User } from '@/types'
+import { api } from './api'
 
 export const userService = {
   async getUsers(): Promise<User[]> {

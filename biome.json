@@ -8,11 +8,18 @@
   },
   "linter": {
     "rules": {
+      "suspicious": {
+        "noArrayIndexKey": "off"
+      },
       "style": {
-        "noMagicNumbers": "off"
+        "noMagicNumbers": "off",
+        "noParameterProperties": "off"
       },
       "nursery": {
         "useConsistentTypeDefinitions": "off"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "off"
       }
     }
   }

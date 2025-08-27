@@ -5,6 +5,8 @@ export const ROUTES = {
   AGENDA: '/agenda',
   PATIENTS: '/patients',
   PATIENT_DETAIL: '/patients/$patientId',
+  DENTISTS: '/dentists',
+  NOT_FOUND: '/404',
 } as const
 
 export const API_ROUTES = {

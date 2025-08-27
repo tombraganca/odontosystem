@@ -9,6 +9,7 @@ import {
 import { sleep } from '@/lib/utils'
 import { authService } from '@/services/auth'
 import type { User } from '@/types'
+import { UserRole } from '@/types'
 
 export interface AuthContext {
   isAuthenticated: boolean
@@ -68,19 +69,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setStoredToken(accessToken)
       setToken(accessToken)
       setStoredUser(email)
-      setUser({ name: email, email } as User)
-    } catch (error) {
+      
+      // Simulando diferentes tipos de usuário baseado no email
+      const role = email.includes('admin') ? UserRole.ADMIN : UserRole.COMMON
+      
+      setUser({ 
+        name: email, 
+        email, 
+        id: '1',
+        phone: '',
+        cpf: '',
+        birthDate: '',
+        role 
+      } as User)
+    } catch {
       throw new Error('Credenciais inválidas')
     }
   }, [])
 
   useEffect(() => {
     const storedToken = getStoredToken()
-    if(!storedToken) return
+    if (!storedToken) {
+      return
+    }
     const storedUser = getStoredUser()
     setToken(storedToken)
     if (storedUser) {
-      setUser({ name: storedUser, email: storedUser } as User) // Temporary user data
+      // Simulando role baseado no email armazenado
+      const role = storedUser.includes('admin') ? UserRole.ADMIN : UserRole.COMMON
+      setUser({ 
+        name: storedUser, 
+        email: storedUser,
+        id: '1',
+        phone: '',
+        cpf: '',
+        birthDate: '',
+        role 
+      } as User)
     }
   }, [])
 

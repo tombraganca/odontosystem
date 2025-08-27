@@ -1,5 +1,5 @@
-import api from './api'
 import type { LoginResponse, User } from '@/types'
+import { api } from './api'
 
 export const authService = {
   async login(email: string, password: string): Promise<LoginResponse> {
@@ -22,7 +22,7 @@ export const authService = {
   async logout(): Promise<void> {
     // Se houver endpoint de logout no backend
     // await api.post('/auth/logout')
-    
+
     // Limpa dados locais
     localStorage.removeItem('tanstack.auth.token')
     localStorage.removeItem('tanstack.auth.user')

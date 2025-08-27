@@ -1,0 +1,40 @@
+import type { ReactNode } from 'react'
+import { Navigate } from '@tanstack/react-router'
+import { usePermissions } from '@/hooks/usePermissions'
+import type { UserRole } from '@/types'
+import { ROUTES } from '@/constants/routes'
+
+interface ProtectedRouteProps {
+  children: ReactNode
+  requiredRole?: UserRole
+  fallbackPath?: string
+}
+
+export function ProtectedRoute({ 
+  children, 
+  requiredRole, 
+  fallbackPath = ROUTES.HOME 
+}: ProtectedRouteProps) {
+  const { hasPermission } = usePermissions()
+
+  if (requiredRole && !hasPermission(requiredRole)) {
+    return <Navigate to={fallbackPath} replace />
+  }
+
+  return <>{children}</>
+}
+
+interface AdminOnlyProps {
+  children: ReactNode
+  fallback?: ReactNode
+}
+
+export function AdminOnly({ children, fallback = null }: AdminOnlyProps) {
+  const { isAdmin } = usePermissions()
+
+  if (!isAdmin) {
+    return <>{fallback}</>
+  }
+
+  return <>{children}</>
+}

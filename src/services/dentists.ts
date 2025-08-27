@@ -1,6 +1,7 @@
 // Serviços relacionados a dentistas
-import api from './api'
-import type { Dentist, CreateDentistData } from '@/types/dentist'
+
+import type { CreateDentistData, Dentist } from '@/types/dentist'
+import { api } from './api'
 
 export const dentistService = {
   async getDentists(): Promise<Dentist[]> {
@@ -18,7 +19,10 @@ export const dentistService = {
     return response.data
   },
 
-  async updateDentist(id: string, data: Partial<CreateDentistData>): Promise<Dentist> {
+  async updateDentist(
+    id: string,
+    data: Partial<CreateDentistData>
+  ): Promise<Dentist> {
     const response = await api.put(`/dentists/${id}`, data)
     return response.data
   },

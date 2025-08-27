@@ -1,9 +1,9 @@
-import { Link } from '@tanstack/react-router'
-import { AlarmCheck, type LucideIcon } from 'lucide-react'
-import type * as React from 'react'
-import { NavMain } from '@/components/layout/side-bar/nav-main'
-import { NavSecondary } from '@/components/layout/side-bar/nav-secondary'
-import { NavUser } from '@/components/layout/side-bar/nav-user'
+import { Link } from "@tanstack/react-router";
+import { AlarmCheck, type LucideIcon } from "lucide-react";
+import type * as React from "react";
+import { NavMain } from "@/components/layout/side-bar/nav-main";
+import { NavSecondary } from "@/components/layout/side-bar/nav-secondary";
+import { NavUser } from "@/components/layout/side-bar/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -12,25 +12,25 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar'
+} from "@/components/ui/sidebar";
 
 type SideBarProps = {
   user: {
-    name: string
-    email: string
-    avatar: string
-  }
+    name: string;
+    email: string;
+    avatar: string;
+  };
   navMain: Array<{
-    title: string
-    url: string
-    icon: LucideIcon
-  }>
+    title: string;
+    url: string;
+    icon: LucideIcon;
+  }>;
   navSecondary: Array<{
-    title: string
-    url: string
-    icon: LucideIcon
-  }>
-}
+    title: string;
+    url: string;
+    icon: LucideIcon;
+  }>;
+};
 
 export function AppSidebar({
   navMain,
@@ -49,7 +49,7 @@ export function AppSidebar({
             >
               <Link to="/agenda">
                 <AlarmCheck className="!size-5" />
-                <span className="font-semibold text-base">Odonto System</span>
+                <span className="font-semibold text-base">Odonto Gávea</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -63,5 +63,5 @@ export function AppSidebar({
         <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

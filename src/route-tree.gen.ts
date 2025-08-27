@@ -9,13 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './pages/__root'
+import { Route as R404RouteImport } from './pages/404'
+import { Route as SplatRouteImport } from './pages/$'
 import { Route as AppLayoutRouteImport } from './pages/_app/layout'
 import { Route as IndexRouteImport } from './pages/index'
 import { Route as AuthSigninRouteImport } from './pages/_auth/signin'
 import { Route as AppPatientsIndexRouteImport } from './pages/_app/patients/index'
+import { Route as AppDentistsIndexRouteImport } from './pages/_app/dentists/index'
 import { Route as AppAgendaIndexRouteImport } from './pages/_app/agenda/index'
 import { Route as AppPatientsPatientIdRouteImport } from './pages/_app/patients/$patientId'
 
+const R404Route = R404RouteImport.update({
+  id: '/404',
+  path: '/404',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppLayoutRoute = AppLayoutRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -35,6 +48,11 @@ const AppPatientsIndexRoute = AppPatientsIndexRouteImport.update({
   path: '/patients/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppDentistsIndexRoute = AppDentistsIndexRouteImport.update({
+  id: '/dentists/',
+  path: '/dentists/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 const AppAgendaIndexRoute = AppAgendaIndexRouteImport.update({
   id: '/agenda/',
   path: '/agenda/',
@@ -48,50 +66,94 @@ const AppPatientsPatientIdRoute = AppPatientsPatientIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
+  '/404': typeof R404Route
   '/signin': typeof AuthSigninRoute
   '/patients/$patientId': typeof AppPatientsPatientIdRoute
   '/agenda': typeof AppAgendaIndexRoute
+  '/dentists': typeof AppDentistsIndexRoute
   '/patients': typeof AppPatientsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
+  '/404': typeof R404Route
   '/signin': typeof AuthSigninRoute
   '/patients/$patientId': typeof AppPatientsPatientIdRoute
   '/agenda': typeof AppAgendaIndexRoute
+  '/dentists': typeof AppDentistsIndexRoute
   '/patients': typeof AppPatientsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppLayoutRouteWithChildren
+  '/$': typeof SplatRoute
+  '/404': typeof R404Route
   '/_auth/signin': typeof AuthSigninRoute
   '/_app/patients/$patientId': typeof AppPatientsPatientIdRoute
   '/_app/agenda/': typeof AppAgendaIndexRoute
+  '/_app/dentists/': typeof AppDentistsIndexRoute
   '/_app/patients/': typeof AppPatientsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/signin' | '/patients/$patientId' | '/agenda' | '/patients'
+  fullPaths:
+    | '/'
+    | '/$'
+    | '/404'
+    | '/signin'
+    | '/patients/$patientId'
+    | '/agenda'
+    | '/dentists'
+    | '/patients'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/signin' | '/patients/$patientId' | '/agenda' | '/patients'
+  to:
+    | '/'
+    | '/$'
+    | '/404'
+    | '/signin'
+    | '/patients/$patientId'
+    | '/agenda'
+    | '/dentists'
+    | '/patients'
   id:
     | '__root__'
     | '/'
     | '/_app'
+    | '/$'
+    | '/404'
     | '/_auth/signin'
     | '/_app/patients/$patientId'
     | '/_app/agenda/'
+    | '/_app/dentists/'
     | '/_app/patients/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppLayoutRoute: typeof AppLayoutRouteWithChildren
+  SplatRoute: typeof SplatRoute
+  R404Route: typeof R404Route
   AuthSigninRoute: typeof AuthSigninRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/404': {
+      id: '/404'
+      path: '/404'
+      fullPath: '/404'
+      preLoaderRoute: typeof R404RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -120,6 +182,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPatientsIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/dentists/': {
+      id: '/_app/dentists/'
+      path: '/dentists'
+      fullPath: '/dentists'
+      preLoaderRoute: typeof AppDentistsIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/_app/agenda/': {
       id: '/_app/agenda/'
       path: '/agenda'
@@ -140,12 +209,14 @@ declare module '@tanstack/react-router' {
 interface AppLayoutRouteChildren {
   AppPatientsPatientIdRoute: typeof AppPatientsPatientIdRoute
   AppAgendaIndexRoute: typeof AppAgendaIndexRoute
+  AppDentistsIndexRoute: typeof AppDentistsIndexRoute
   AppPatientsIndexRoute: typeof AppPatientsIndexRoute
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppPatientsPatientIdRoute: AppPatientsPatientIdRoute,
   AppAgendaIndexRoute: AppAgendaIndexRoute,
+  AppDentistsIndexRoute: AppDentistsIndexRoute,
   AppPatientsIndexRoute: AppPatientsIndexRoute,
 }
 
@@ -156,6 +227,8 @@ const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppLayoutRoute: AppLayoutRouteWithChildren,
+  SplatRoute: SplatRoute,
+  R404Route: R404Route,
   AuthSigninRoute: AuthSigninRoute,
 }
 export const routeTree = rootRouteImport

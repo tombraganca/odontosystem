@@ -1,11 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { useState, useEffect } from 'react'
 import { CalendarIcon } from 'lucide-react'
-
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -15,9 +21,8 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { appointmentService, userService, dentistService } from '@/services'
-import type { User, Dentist, CreateAppointmentData } from '@/types'
-import { toast } from 'sonner'
+import { appointmentService, dentistService, userService } from '@/services'
+import type { CreateAppointmentData, Dentist, User } from '@/types'
 
 const createAppointmentSchema = z.object({
   userId: z.string().min(1, 'Selecione um paciente'),
@@ -43,9 +48,24 @@ const treatmentTypes = [
 ]
 
 const timeSlots = [
-  '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
-  '11:00', '11:30', '13:00', '13:30', '14:00', '14:30',
-  '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
+  '08:00',
+  '08:30',
+  '09:00',
+  '09:30',
+  '10:00',
+  '10:30',
+  '11:00',
+  '11:30',
+  '13:00',
+  '13:30',
+  '14:00',
+  '14:30',
+  '15:00',
+  '15:30',
+  '16:00',
+  '16:30',
+  '17:00',
+  '17:30',
 ]
 
 interface CreateAppointmentFormProps {
@@ -53,9 +73,9 @@ interface CreateAppointmentFormProps {
   initialDate?: string
 }
 
-export function CreateAppointmentForm({ 
+export function CreateAppointmentForm({
   onAppointmentCreated,
-  initialDate 
+  initialDate,
 }: CreateAppointmentFormProps) {
   const [users, setUsers] = useState<User[]>([])
   const [dentists, setDentists] = useState<Dentist[]>([])
@@ -100,7 +120,9 @@ export function CreateAppointmentForm({
     setLoading(true)
     try {
       // Combina data e hora
-      const scheduledDateTime = new Date(`${data.scheduledDate}T${data.scheduledTime}`)
+      const scheduledDateTime = new Date(
+        `${data.scheduledDate}T${data.scheduledTime}`
+      )
 
       const appointmentData: CreateAppointmentData = {
         userId: data.userId,
@@ -111,7 +133,7 @@ export function CreateAppointmentForm({
       }
 
       await appointmentService.createAppointment(appointmentData)
-      
+
       toast.success('Consulta agendada com sucesso!')
       form.reset()
       onAppointmentCreated?.()
@@ -123,7 +145,7 @@ export function CreateAppointmentForm({
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="mx-auto w-full max-w-2xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CalendarIcon className="h-5 w-5" />
@@ -135,7 +157,7 @@ export function CreateAppointmentForm({
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="userId"
@@ -144,7 +166,7 @@ export function CreateAppointmentForm({
                   <FormLabel>Paciente</FormLabel>
                   <FormControl>
                     <select
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:font-medium file:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       {...field}
                     >
                       <option value="">Selecione um paciente</option>
@@ -168,7 +190,7 @@ export function CreateAppointmentForm({
                   <FormLabel>Dentista</FormLabel>
                   <FormControl>
                     <select
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:font-medium file:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       {...field}
                     >
                       <option value="">Selecione um dentista</option>
@@ -207,7 +229,7 @@ export function CreateAppointmentForm({
                     <FormLabel>Horário</FormLabel>
                     <FormControl>
                       <select
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:font-medium file:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         {...field}
                       >
                         <option value="">Selecione um horário</option>
@@ -232,7 +254,7 @@ export function CreateAppointmentForm({
                   <FormLabel>Tipo de Tratamento</FormLabel>
                   <FormControl>
                     <select
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:font-medium file:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       {...field}
                     >
                       <option value="">Selecione o tratamento</option>
@@ -256,7 +278,7 @@ export function CreateAppointmentForm({
                   <FormLabel>Observações</FormLabel>
                   <FormControl>
                     <textarea
-                      className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+                      className="flex min-h-[80px] w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       placeholder="Observações adicionais (opcional)"
                       {...field}
                     />
@@ -267,7 +289,7 @@ export function CreateAppointmentForm({
             />
 
             <div className="flex gap-2 pt-4">
-              <Button type="submit" disabled={loading} className="flex-1">
+              <Button className="flex-1" disabled={loading} type="submit">
                 {loading ? 'Agendando...' : 'Agendar Consulta'}
               </Button>
             </div>
