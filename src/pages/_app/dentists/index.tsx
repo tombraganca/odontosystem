@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import type { ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
 import { DataTable } from '@/components/data-table'
+import { CreateDentistDialog } from '@/components/dentists/create-dentist-dialog'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -15,7 +16,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useDentists } from '@/hooks/useDentists'
 import { UserRole } from '@/types'
 import type { Dentist } from '@/types/dentist'
-import { CreateDentistDialog } from '@/components/dentists/create-dentist-dialog'
 
 export const Route = createFileRoute('/_app/dentists/')({
   component: DentistsPage,
@@ -57,7 +57,7 @@ const columns: ColumnDef<Dentist>[] = [
     cell: () => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
+          <Button className="h-8 w-8 p-0" variant="ghost">
             <span className="sr-only">Abrir menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>

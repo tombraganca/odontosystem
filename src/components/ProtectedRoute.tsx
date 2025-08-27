@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react'
 import { Navigate } from '@tanstack/react-router'
+import type { ReactNode } from 'react'
+import { ROUTES } from '@/constants/routes'
 import { usePermissions } from '@/hooks/usePermissions'
 import type { UserRole } from '@/types'
-import { ROUTES } from '@/constants/routes'
 
 interface ProtectedRouteProps {
   children: ReactNode
@@ -10,15 +10,15 @@ interface ProtectedRouteProps {
   fallbackPath?: string
 }
 
-export function ProtectedRoute({ 
-  children, 
-  requiredRole, 
-  fallbackPath = ROUTES.HOME 
+export function ProtectedRoute({
+  children,
+  requiredRole,
+  fallbackPath = ROUTES.HOME,
 }: ProtectedRouteProps) {
   const { hasPermission } = usePermissions()
 
   if (requiredRole && !hasPermission(requiredRole)) {
-    return <Navigate to={fallbackPath} replace />
+    return <Navigate replace to={fallbackPath} />
   }
 
   return <>{children}</>

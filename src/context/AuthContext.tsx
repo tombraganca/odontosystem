@@ -69,18 +69,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setStoredToken(accessToken)
       setToken(accessToken)
       setStoredUser(email)
-      
+
       // Simulando diferentes tipos de usuário baseado no email
       const role = email.includes('admin') ? UserRole.ADMIN : UserRole.COMMON
-      
-      setUser({ 
-        name: email, 
-        email, 
+
+      setUser({
+        name: email,
+        email,
         id: '1',
         phone: '',
         cpf: '',
         birthDate: '',
-        role 
+        role,
       } as User)
     } catch {
       throw new Error('Credenciais inválidas')
@@ -96,21 +96,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setToken(storedToken)
     if (storedUser) {
       // Simulando role baseado no email armazenado
-      const role = storedUser.includes('admin') ? UserRole.ADMIN : UserRole.COMMON
-      setUser({ 
-        name: storedUser, 
+      const role = storedUser.includes('admin')
+        ? UserRole.ADMIN
+        : UserRole.COMMON
+      setUser({
+        name: storedUser,
         email: storedUser,
         id: '1',
         phone: '',
         cpf: '',
         birthDate: '',
-        role 
+        role,
       } as User)
     }
   }, [])
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, token, login, logout }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, user, token, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   )

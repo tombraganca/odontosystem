@@ -4,7 +4,7 @@ export const UserRole = {
   COMMON: 'COMMON',
 } as const
 
-export type UserRole = typeof UserRole[keyof typeof UserRole]
+export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 export interface User {
   id: string
@@ -28,5 +28,9 @@ export interface ApiResponse<T = unknown> {
 }
 
 // Re-exporta tipos específicos
-export type { Appointment, CreateAppointmentData, UpdateAppointmentStatusData } from './appointment'
-export type { Dentist, CreateDentistData } from './dentist'
+export type {
+  Appointment,
+  CreateAppointmentData,
+  UpdateAppointmentStatusData,
+} from './appointment'
+export type { CreateDentistData, Dentist } from './dentist'

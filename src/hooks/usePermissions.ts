@@ -11,12 +11,12 @@ export function usePermissions() {
     if (!user) {
       return false
     }
-    
+
     // Admin tem acesso a tudo
     if (user.role === UserRole.ADMIN) {
       return true
     }
-    
+
     // Verifica se o usuário tem o role específico
     return user.role === requiredRole
   }

@@ -11,9 +11,9 @@ import {
 } from 'lucide-react'
 import { AppSidebar } from '@/components/layout/side-bar/app-side-bar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { AppHeader } from './-components/header'
-import { usePermissions } from '@/hooks/usePermissions'
 import { ROUTES } from '@/constants/routes'
+import { usePermissions } from '@/hooks/usePermissions'
+import { AppHeader } from './-components/header'
 
 export const Route = createFileRoute('/_app')({
   component: RouteComponent,
@@ -44,13 +44,15 @@ function RouteComponent() {
         url: ROUTES.HOME,
         icon: CircleGauge,
       },
-      ...(isAdmin ? [
-        {
-          title: 'Dentistas',
-          url: ROUTES.DENTISTS,
-          icon: Stethoscope,
-        },
-      ] : []),
+      ...(isAdmin
+        ? [
+            {
+              title: 'Dentistas',
+              url: ROUTES.DENTISTS,
+              icon: Stethoscope,
+            },
+          ]
+        : []),
       {
         title: 'Lifecycle',
         url: '#',
