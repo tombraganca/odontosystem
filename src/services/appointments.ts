@@ -11,7 +11,6 @@ export const appointmentService = {
   async getAppointments(): Promise<Appointment[]> {
     try {
       const response = await api.get('/appointments')
-
       return response.data
     } catch (error) {
       if (error instanceof Error) {
@@ -60,22 +59,14 @@ export const appointmentService = {
     }
   },
 
-  async cancelAppointment(id: string): Promise<void> {
-    try {
-      await api.delete(`/appointments/${id}`)
-    } catch (error) {
-      if (error instanceof Error) {
-        throw error
-      }
-      throw new Error(`Erro desconhecido ao cancelar consulta ${id}`)
-    }
-  },
-
-  // Buscar consultas por data
+  // Métodos de filtro (usando query params no frontend)
   async getAppointmentsByDate(date: string): Promise<Appointment[]> {
     try {
-      const response = await api.get(`/appointments?date=${date}`)
-      return response.data
+      const appointments = await this.getAppointments()
+      return appointments.filter(appointment => {
+        const appointmentDate = new Date(appointment.scheduledDate).toISOString().split('T')[0]
+        return appointmentDate === date
+      })
     } catch (error) {
       if (error instanceof Error) {
         throw error
@@ -84,33 +75,27 @@ export const appointmentService = {
     }
   },
 
-  // Buscar consultas por dentista
   async getAppointmentsByDentist(dentistId: string): Promise<Appointment[]> {
     try {
-      const response = await api.get(`/appointments?dentistId=${dentistId}`)
-      return response.data
+      const appointments = await this.getAppointments()
+      return appointments.filter(appointment => appointment.dentistId === dentistId)
     } catch (error) {
       if (error instanceof Error) {
         throw error
       }
-      throw new Error(
-        `Erro desconhecido ao buscar consultas do dentista ${dentistId}`
-      )
+      throw new Error(`Erro desconhecido ao buscar consultas do dentista ${dentistId}`)
     }
   },
 
-  // Buscar consultas por usuário
   async getAppointmentsByUser(userId: string): Promise<Appointment[]> {
     try {
-      const response = await api.get(`/appointments?userId=${userId}`)
-      return response.data
+      const appointments = await this.getAppointments()
+      return appointments.filter(appointment => appointment.userId === userId)
     } catch (error) {
       if (error instanceof Error) {
         throw error
       }
-      throw new Error(
-        `Erro desconhecido ao buscar consultas do usuário ${userId}`
-      )
+      throw new Error(`Erro desconhecido ao buscar consultas do usuário ${userId}`)
     }
   },
 }

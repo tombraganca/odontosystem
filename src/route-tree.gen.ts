@@ -18,6 +18,7 @@ import { Route as AppPatientsIndexRouteImport } from './pages/_app/patients/inde
 import { Route as AppDentistsIndexRouteImport } from './pages/_app/dentists/index'
 import { Route as AppAgendaIndexRouteImport } from './pages/_app/agenda/index'
 import { Route as AppPatientsPatientIdRouteImport } from './pages/_app/patients/$patientId'
+import { Route as AppAgendaNewRouteImport } from './pages/_app/agenda/new'
 
 const R404Route = R404RouteImport.update({
   id: '/404',
@@ -63,12 +64,18 @@ const AppPatientsPatientIdRoute = AppPatientsPatientIdRouteImport.update({
   path: '/patients/$patientId',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppAgendaNewRoute = AppAgendaNewRouteImport.update({
+  id: '/agenda/new',
+  path: '/agenda/new',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/404': typeof R404Route
   '/signin': typeof AuthSigninRoute
+  '/agenda/new': typeof AppAgendaNewRoute
   '/patients/$patientId': typeof AppPatientsPatientIdRoute
   '/agenda': typeof AppAgendaIndexRoute
   '/dentists': typeof AppDentistsIndexRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByTo {
   '/$': typeof SplatRoute
   '/404': typeof R404Route
   '/signin': typeof AuthSigninRoute
+  '/agenda/new': typeof AppAgendaNewRoute
   '/patients/$patientId': typeof AppPatientsPatientIdRoute
   '/agenda': typeof AppAgendaIndexRoute
   '/dentists': typeof AppDentistsIndexRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   '/$': typeof SplatRoute
   '/404': typeof R404Route
   '/_auth/signin': typeof AuthSigninRoute
+  '/_app/agenda/new': typeof AppAgendaNewRoute
   '/_app/patients/$patientId': typeof AppPatientsPatientIdRoute
   '/_app/agenda/': typeof AppAgendaIndexRoute
   '/_app/dentists/': typeof AppDentistsIndexRoute
@@ -103,6 +112,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/404'
     | '/signin'
+    | '/agenda/new'
     | '/patients/$patientId'
     | '/agenda'
     | '/dentists'
@@ -113,6 +123,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/404'
     | '/signin'
+    | '/agenda/new'
     | '/patients/$patientId'
     | '/agenda'
     | '/dentists'
@@ -124,6 +135,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/404'
     | '/_auth/signin'
+    | '/_app/agenda/new'
     | '/_app/patients/$patientId'
     | '/_app/agenda/'
     | '/_app/dentists/'
@@ -203,10 +215,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPatientsPatientIdRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/agenda/new': {
+      id: '/_app/agenda/new'
+      path: '/agenda/new'
+      fullPath: '/agenda/new'
+      preLoaderRoute: typeof AppAgendaNewRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
   }
 }
 
 interface AppLayoutRouteChildren {
+  AppAgendaNewRoute: typeof AppAgendaNewRoute
   AppPatientsPatientIdRoute: typeof AppPatientsPatientIdRoute
   AppAgendaIndexRoute: typeof AppAgendaIndexRoute
   AppDentistsIndexRoute: typeof AppDentistsIndexRoute
@@ -214,6 +234,7 @@ interface AppLayoutRouteChildren {
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
+  AppAgendaNewRoute: AppAgendaNewRoute,
   AppPatientsPatientIdRoute: AppPatientsPatientIdRoute,
   AppAgendaIndexRoute: AppAgendaIndexRoute,
   AppDentistsIndexRoute: AppDentistsIndexRoute,

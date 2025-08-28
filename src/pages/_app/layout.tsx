@@ -12,7 +12,8 @@ import {
 import { AppSidebar } from '@/components/layout/side-bar/app-side-bar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { ROUTES } from '@/constants/routes'
-import { usePermissions } from '@/hooks/usePermissions'
+import { useAuth } from '../../context/AuthContext'
+import { UserRole } from '../../types'
 import { AppHeader } from './-components/header'
 
 export const Route = createFileRoute('/_app')({
@@ -20,7 +21,7 @@ export const Route = createFileRoute('/_app')({
 })
 
 function RouteComponent() {
-  const { isAdmin } = usePermissions()
+  const { user } = useAuth()
 
   const data = {
     user: {
@@ -44,7 +45,7 @@ function RouteComponent() {
         url: ROUTES.HOME,
         icon: CircleGauge,
       },
-      ...(isAdmin
+      ...(user?.role === UserRole.ADMIN
         ? [
             {
               title: 'Dentistas',

@@ -9,7 +9,6 @@ import {
 import { sleep } from '@/lib/utils'
 import { authService } from '@/services/auth'
 import type { User } from '@/types'
-import { UserRole } from '@/types'
 
 export interface AuthContext {
   isAuthenticated: boolean
@@ -25,12 +24,12 @@ const userKey = 'tanstack.auth.user'
 const tokenKey = 'tanstack.auth.token'
 
 function getStoredUser() {
-  return localStorage.getItem(userKey)
+  return JSON.parse(localStorage.getItem(userKey) || 'null') as User | null
 }
 
-function setStoredUser(user: string | null) {
+function setStoredUser(user: User | null) {
   if (user) {
-    localStorage.setItem(userKey, user)
+    localStorage.setItem(userKey, JSON.stringify(user))
   } else {
     localStorage.removeItem(userKey)
   }
@@ -65,23 +64,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     try {
       const response = await authService.login(email, password)
-      const accessToken = response.access_token
-      setStoredToken(accessToken)
-      setToken(accessToken)
-      setStoredUser(email)
-
-      // Simulando diferentes tipos de usuário baseado no email
-      const role = email.includes('admin') ? UserRole.ADMIN : UserRole.COMMON
-
-      setUser({
-        name: email,
-        email,
-        id: '1',
-        phone: '',
-        cpf: '',
-        birthDate: '',
-        role,
-      } as User)
+      setStoredToken(response.access_token)
+      setStoredUser(response.user ?? null)
     } catch {
       throw new Error('Credenciais inválidas')
     }
@@ -93,22 +77,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return
     }
     const storedUser = getStoredUser()
-    setToken(storedToken)
-    if (storedUser) {
-      // Simulando role baseado no email armazenado
-      const role = storedUser.includes('admin')
-        ? UserRole.ADMIN
-        : UserRole.COMMON
-      setUser({
-        name: storedUser,
-        email: storedUser,
-        id: '1',
-        phone: '',
-        cpf: '',
-        birthDate: '',
-        role,
-      } as User)
+    if (!storedUser) {
+      return
     }
+    setToken(storedToken)
+    setUser(storedUser)
   }, [])
 
   return (

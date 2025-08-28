@@ -1,8 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CalendarIcon, Plus } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { CalendarIcon } from 'lucide-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import {
@@ -23,8 +22,17 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { appointmentService, dentistService, userService } from '@/services'
-import type { CreateAppointmentData, Dentist, User } from '@/types'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { useCreateAppointment } from '@/hooks/useAppointments'
+import { useDentists } from '@/hooks/useDentists'
+import type { CreateAppointmentData } from '@/types'
 
 const createAppointmentSchema = z.object({
   userId: z.string().min(1, 'Selecione um paciente'),
@@ -103,7 +111,6 @@ export function CreateAppointmentDialog({
       const usersData = await userService.getUsers()
       setUsers(usersData)
     } catch (error: any) {
-      console.error('Error loading users:', error)
       const errorMessage =
         error.statusCode === 403
           ? 'Sem permissão para ver pacientes'

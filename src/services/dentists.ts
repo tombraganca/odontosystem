@@ -31,9 +31,9 @@ export const dentistService = {
     await api.delete(`/dentists/${id}`)
   },
 
-  // Buscar dentistas ativos
+  // Buscar dentistas ativos (filtro no frontend)
   async getActiveDentists(): Promise<Dentist[]> {
-    const response = await api.get('/dentists?active=true')
-    return response.data
+    const dentists = await this.getDentists()
+    return dentists.filter(dentist => dentist.isActive)
   },
 }
